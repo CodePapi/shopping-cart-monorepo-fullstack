@@ -1,10 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router';
 import App from './App';
-import { CartProvider } from './context';
-import {AdminDashboard, CartPage, CreateProductForm, NotFound, OrderConfirmationPage, ShopPage} from './pages';
-
+import { AuthProvider, CartProvider } from './context';
+import {
+  AdminDashboard,
+  CartPage,
+  CreateProductForm,
+  LoginPage,
+  NotFound,
+  OrderConfirmationPage,
+  RegisterPage,
+  ShopPage,
+} from './pages';
+import { RequireAdmin } from './components';
+import './index.css';
 
 const router = createBrowserRouter([
   {
@@ -20,11 +30,27 @@ const router = createBrowserRouter([
 
       {
         path: 'admin',
-        element: <AdminDashboard />,
+        element: (
+          <RequireAdmin>
+            <AdminDashboard />
+          </RequireAdmin>
+        ),
       },
       {
         path: 'admin/new',
-        element: <CreateProductForm /> ,
+        element: (
+          <RequireAdmin>
+            <CreateProductForm />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'register',
+        element: <RegisterPage />,
       },
 
       {
@@ -39,10 +65,12 @@ const router = createBrowserRouter([
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
-  </React.StrictMode>,
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
+  </StrictMode>,
 );

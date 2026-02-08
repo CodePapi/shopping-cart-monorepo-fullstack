@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Container, SiteFooter, SiteHeader } from './components';
 import { useCart } from './hooks';
 
 function App() {
@@ -6,36 +7,14 @@ function App() {
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <header
-        style={{
-          borderBottom: '1px solid #ccc',
-          paddingBottom: '10px',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <nav>
-          <Link to="/" style={{ marginRight: '15px' }}>
-            Shop
-          </Link>
-          <Link to="/admin">Admin</Link>
-        </nav>
-        <Link
-          to="/cart"
-          style={{
-            fontWeight: 'bold',
-            textDecoration: 'none',
-            color: 'inherit',
-          }}
-        >
-          🛒 Cart ({itemCount} {itemCount === 1 ? 'item' : 'items'})
-        </Link>
-      </header>
-
-      <main style={{ marginTop: '20px' }}>
-        <Outlet />
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <SiteHeader itemCount={itemCount} />
+      <main className="py-8">
+        <Container>
+          <Outlet />
+        </Container>
       </main>
+      <SiteFooter />
     </div>
   );
 }

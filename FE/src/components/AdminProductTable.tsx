@@ -1,46 +1,58 @@
 import type { AdminProductTableProps } from '../types';
+import { formatCurrency, formatDate } from '../utils/format';
+import Card from './ui/Card';
 
 const AdminProductTable: React.FC<AdminProductTableProps> = ({
   products,
 }: AdminProductTableProps) => {
   if (products.length === 0) {
     return (
-      <p>
-        No products found in the database. Use the "Create New Product" button
-        to add one.
-      </p>
+      <Card className="border-dashed text-center">
+        <h3 className="text-lg font-semibold text-slate-900">
+          No products yet
+        </h3>
+        <p className="mt-2 text-sm text-slate-600">
+          Use the “Create New Product” button to add your first item.
+        </p>
+      </Card>
     );
   }
 
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <table
-        style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}
-      >
-        <thead>
-          <tr style={{ borderBottom: '2px solid #333' }}>
-            <th style={{ padding: '10px' }}>ID</th>
-            <th style={{ padding: '10px' }}>Name</th>
-            <th style={{ padding: '10px' }}>Price</th>
-            <th style={{ padding: '10px' }}>Available</th>
-            <th style={{ padding: '10px' }}>Created At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id} style={{ borderBottom: '1px solid #eee' }}>
-              <td style={{ padding: '10px', width: '50px' }}>{product.id}</td>
-              <td style={{ padding: '10px' }}>{product.name}</td>
-              <td style={{ padding: '10px' }}>{product.price.toFixed(2)}EUR</td>
-              <td style={{ padding: '10px' }}>{product.availableCount}</td>
-              <td style={{ padding: '10px', fontSize: 'small' }}>
-                {new Date(product.createdAt).toLocaleDateString()}
-              </td>
+    <Card className="overflow-hidden p-0">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+            <tr>
+              <th className="px-4 py-3">ID</th>
+              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Price</th>
+              <th className="px-4 py-3">Available</th>
+              <th className="px-4 py-3">Created</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {products.map((product) => (
+              <tr key={product.id} className="hover:bg-slate-50">
+                <td className="px-4 py-3 font-medium text-slate-900">
+                  {product.id}
+                </td>
+                <td className="px-4 py-3 text-slate-700">{product.name}</td>
+                <td className="px-4 py-3 text-slate-700">
+                  {formatCurrency(product.price)}
+                </td>
+                <td className="px-4 py-3 text-slate-700">
+                  {product.availableCount}
+                </td>
+                <td className="px-4 py-3 text-slate-500">
+                  {formatDate(product.createdAt)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
   );
 };
 

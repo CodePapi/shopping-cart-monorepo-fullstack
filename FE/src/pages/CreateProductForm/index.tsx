@@ -2,7 +2,7 @@ import type { CreateProduct } from 'project-shared';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProduct } from '../../api';
-import styles from './styles';
+import { Button, Card, Input, PageHeader, TextArea } from '../../components';
 
 const CreateProductForm: React.FC = () => {
   const navigate = useNavigate();
@@ -66,82 +66,99 @@ const CreateProductForm: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>➕ Create New Product</h1>
-      <p style={styles.subtitle}>
-        Fill out the details below to add a new item to the inventory.
-      </p>
+    <div className="space-y-8">
+      <PageHeader
+        title="Create new product"
+        description="Add a new item to your catalog with pricing and inventory details."
+      />
 
-      {error && <p style={styles.error}>Error: {error}</p>}
+      <Card className="max-w-2xl">
+        {error && (
+          <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <label style={styles.label}>
-          Product Name:
-          <input
-            style={styles.input}
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="e.g., Wireless Mouse"
-            required
-          />
-        </label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <label
+            className="block text-sm font-semibold text-slate-700"
+            htmlFor="product-name"
+          >
+            Product Name
+            <Input
+              id="product-name"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="e.g., Wireless Mouse"
+              required
+              className="mt-2"
+            />
+          </label>
 
-        <label style={styles.label}>
-          Product Description:
-          <textarea
-            style={styles.textarea}
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="A brief summary of the product's features and use."
-            required
-            rows={4}
-          />
-        </label>
+          <label
+            className="block text-sm font-semibold text-slate-700"
+            htmlFor="product-description"
+          >
+            Product Description
+            <TextArea
+              id="product-description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="A brief summary of the product's features and use."
+              required
+              rows={4}
+              className="mt-2"
+            />
+          </label>
 
-        <label style={styles.label}>
-          Price (EUR):
-          <input
-            style={styles.input}
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            min="0.01"
-            step="0.01"
-            placeholder="0.01"
-            required
-          />
-        </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label
+              className="block text-sm font-semibold text-slate-700"
+              htmlFor="product-price"
+            >
+              Price (EUR)
+              <Input
+                id="product-price"
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                min="0.01"
+                step="0.01"
+                placeholder="0.01"
+                required
+                className="mt-2"
+              />
+            </label>
 
-        <label style={styles.label}>
-          Available Count:
-          <input
-            style={styles.input}
-            type="number"
-            name="availableCount"
-            value={formData.availableCount}
-            onChange={handleChange}
-            min="1"
-            step="1"
-            placeholder="1"
-            required
-          />
-        </label>
+            <label
+              className="block text-sm font-semibold text-slate-700"
+              htmlFor="product-available"
+            >
+              Available Count
+              <Input
+                id="product-available"
+                type="number"
+                name="availableCount"
+                value={formData.availableCount}
+                onChange={handleChange}
+                min="1"
+                step="1"
+                placeholder="1"
+                required
+                className="mt-2"
+              />
+            </label>
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            ...styles.button,
-            ...(loading ? styles.buttonDisabled : {}),
-          }}
-        >
-          {loading ? 'Creating...' : 'Create Product'}
-        </button>
-      </form>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? 'Creating...' : 'Create product'}
+          </Button>
+        </form>
+      </Card>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { CartContext } from '../context';
+import { useAuth } from './useAuth';
 
 export const useCart = () => {
   const context = useContext(CartContext);
@@ -8,3 +9,5 @@ export const useCart = () => {
   }
   return context;
 };
+
+export { useAuth };

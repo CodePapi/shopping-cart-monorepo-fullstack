@@ -2,6 +2,8 @@ import type { OrderResponse } from 'project-shared';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchOrder } from '../../api';
+import { Badge, Card, PageHeader } from '../../components';
+import { formatCurrency, formatDate } from '../../utils/format';
 
 const OrderConfirmationPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -35,58 +37,91 @@ const OrderConfirmationPage: React.FC = () => {
   }, [orderId]);
 
   if (loading) {
-    return <h2>Loading Order Confirmation...</h2>;
+    return (
+      <Card className="text-center">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Loading order confirmation...
+        </h2>
+        <p className="mt-2 text-sm text-slate-600">Please wait.</p>
+      </Card>
+    );
   }
 
   if (error) {
-    return <h2 style={{ color: 'red' }}>Error: {error}</h2>;
+    return (
+      <Card className="border-rose-200 bg-rose-50 text-rose-700">{error}</Card>
+    );
   }
 
   if (!order) {
-    return <h2 style={{ color: 'red' }}>Order details unavailable.</h2>;
+    return (
+      <Card className="border-rose-200 bg-rose-50 text-rose-700">
+        Order details unavailable.
+      </Card>
+    );
   }
 
+  const statusTone =
+    order.status === 'DELIVERED'
+      ? 'success'
+      : order.status === 'CANCELED'
+        ? 'danger'
+        : 'warning';
+
   return (
-    <div>
-      <h1>🎉 Order Confirmed!</h1>
-      <p style={{ fontSize: '1.1em', fontWeight: 'bold' }}>
-        Order ID: {order.id}
-      </p>
+    <div className="space-y-8">
+      <PageHeader
+        title="Order confirmed"
+        description="Thanks for your purchase! We've sent your order to fulfillment."
+      />
 
-      <div
-        style={{ border: '1px solid #ccc', padding: '20px', margin: '20px 0' }}
-      >
-        <h3>Order Summary</h3>
-        <p>
-          <strong>Status:</strong>{' '}
-          <span style={{ color: 'green', fontWeight: 'bold' }}>
-            {order.status}
-          </span>
-        </p>
-        <p>
-          <strong>Customer ID:</strong> {order.customerId}
-        </p>
-        <p>
-          <strong>Placed On:</strong>{' '}
-          {new Date(order.orderCreatedDate).toLocaleString()}
-        </p>
-        <p>
-          <strong>Order Total:</strong> {order.orderTotal.toFixed(2)} EUR
-        </p>
+      <Card className="space-y-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge tone={statusTone}>{order.status}</Badge>
+          <span className="text-sm text-slate-600">Order ID {order.id}</span>
+        </div>
 
-        <h4>Items Ordered:</h4>
-        <ul style={{ listStyleType: 'none', paddingLeft: '0' }}>
-          {order.products.map((item) => (
-            <li key={item.id}>
-              {item.quantity} x {item.name} (
-              {(order.orderTotal / item.quantity).toFixed(2)} EUR each - *Note:
-              Total calculation is simplified here*)
-            </li>
-          ))}
-        </ul>
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              Customer ID
+            </p>
+            <p className="text-sm font-semibold text-slate-900">
+              {order.customerId}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              Placed on
+            </p>
+            <p className="text-sm font-semibold text-slate-900">
+              {formatDate(order.orderCreatedDate)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              Order total
+            </p>
+            <p className="text-lg font-semibold text-slate-900">
+              {formatCurrency(order.orderTotal)}
+            </p>
+          </div>
+        </div>
 
-      <p>Thank you for your purchase!</p>
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900">
+            Items ordered
+          </h3>
+          <ul className="mt-3 space-y-2 text-sm text-slate-700">
+            {order.products.map((item) => (
+              <li key={item.id} className="flex items-center justify-between">
+                <span>{item.name}</span>
+                <span className="font-semibold">x{item.quantity}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Card>
     </div>
   );
 };

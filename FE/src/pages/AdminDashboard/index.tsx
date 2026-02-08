@@ -2,7 +2,7 @@ import type { Product } from 'project-shared';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchProducts } from '../../api';
-import { AdminProductTable } from '../../components';
+import { AdminProductTable, Button, Card, PageHeader } from '../../components';
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,30 +31,37 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div>
-        <h2>Loading Admin Dashboard...</h2>
-      </div>
+      <Card className="text-center">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Loading admin dashboard...
+        </h2>
+        <p className="mt-2 text-sm text-slate-600">Fetching inventory data.</p>
+      </Card>
     );
   }
 
   if (error) {
     return (
-      <div>
-        <h2>Error Loading Data</h2>
-        <p>Details: {error}</p>
-      </div>
+      <Card className="border-rose-200 bg-rose-50">
+        <h2 className="text-lg font-semibold text-rose-700">
+          Error loading data
+        </h2>
+        <p className="mt-2 text-sm text-rose-600">{error}</p>
+      </Card>
     );
   }
 
   return (
-    <div>
-      <h1>⚙️ Admin Product Dashboard</h1>
-
-      <Link to="/admin/new">
-        <button type="button" style={{ cursor: 'pointer', height: '40px' }}>
-          ➕ Create New Product
-        </button>
-      </Link>
+    <div className="space-y-8">
+      <PageHeader
+        title="Admin product dashboard"
+        description="Manage your catalog, review availability, and keep inventory fresh."
+        action={
+          <Link to="/admin/new">
+            <Button>+ Create new product</Button>
+          </Link>
+        }
+      />
 
       <AdminProductTable products={products} />
     </div>

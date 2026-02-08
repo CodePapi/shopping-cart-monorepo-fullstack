@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { placeOrder } from '../../api';
+import { Button, Card, PageHeader } from '../../components';
 import { useCart } from '../../hooks';
+import { formatCurrency } from '../../utils/format';
 
 //hardcoded as suggested. in real world, we would take it from the user's profile data after logging in.
 const CUSTOMER_ID = '7545afc6-c1eb-497a-9a44-4e6ba595b4ab';
@@ -32,7 +34,6 @@ const CartPage: React.FC = () => {
     try {
       const newOrder = await placeOrder(payload);
       clearCart();
-      alert(`Order ${newOrder.id} placed successfully!`);
       navigate(`/orders/${newOrder.id}`);
     } catch (err) {
       console.error('Order placement failed:', err);
@@ -47,88 +48,135 @@ const CartPage: React.FC = () => {
   };
 
   const total = getCartTotal();
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div>
-      <h1>🛒 Your Shopping Cart</h1>
+    <div className="space-y-8">
+      <PageHeader
+        title="Your cart"
+        description="Review items, update quantities, and checkout when you're ready."
+      />
 
-      {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+      {error && (
+        <Card className="border-rose-200 bg-rose-50 text-rose-700">
+          {error}
+        </Card>
+      )}
 
       {items.length === 0 ? (
-        <p>
-          Your cart is empty. Start shopping on the <a href="/">Shop Page</a>!
-        </p>
-      ) : (
-        <>
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              marginBottom: '20px',
-            }}
+        <Card className="text-center">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Your cart is empty
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Explore the catalog to add items to your cart.
+          </p>
+          <Link
+            to="/"
+            className="mt-4 inline-flex items-center justify-center rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
           >
-            <thead>
-              <tr style={{ borderBottom: '1px solid #333' }}>
-                <th style={{ padding: '10px' }}>Product</th>
-                <th style={{ padding: '10px' }}>Price</th>
-                <th style={{ padding: '10px' }}>Quantity</th>
-                <th style={{ padding: '10px' }}>Subtotal</th>
-                <th style={{ padding: '10px' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+            Continue shopping
+          </Link>
+        </Card>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+          <Card className="space-y-4">
+            <div className="hidden md:block">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+                  <tr>
+                    <th className="py-3">Product</th>
+                    <th className="py-3">Price</th>
+                    <th className="py-3">Qty</th>
+                    <th className="py-3">Subtotal</th>
+                    <th className="py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {items.map((item) => (
+                    <tr key={item.productId}>
+                      <td className="py-3 font-medium text-slate-900">
+                        {item.name}
+                      </td>
+                      <td className="py-3 text-slate-700">
+                        {formatCurrency(item.price)}
+                      </td>
+                      <td className="py-3 text-slate-700">{item.quantity}</td>
+                      <td className="py-3 text-slate-700">
+                        {formatCurrency(item.price * item.quantity)}
+                      </td>
+                      <td className="py-3 text-right">
+                        <Button
+                          variant="ghost"
+                          className="text-rose-600 hover:text-rose-700"
+                          onClick={() => removeItem(item.productId)}
+                        >
+                          Remove
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="space-y-4 md:hidden">
               {items.map((item) => (
-                <tr
+                <div
                   key={item.productId}
-                  style={{ borderBottom: '1px solid #eee' }}
+                  className="rounded-2xl border border-slate-200 p-4"
                 >
-                  <td style={{ padding: '10px' }}>{item.name}</td>
-                  <td style={{ padding: '10px' }}>
-                    {item.price.toFixed(2)} EUR
-                  </td>
-                  <td style={{ padding: '10px' }}>{item.quantity}</td>
-                  <td style={{ padding: '10px' }}>
-                    {(item.price * item.quantity).toFixed(2)} EUR
-                  </td>
-                  <td style={{ padding: '10px' }}>
-                    <button
-                      type="button"
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-slate-900">
+                        {item.name}
+                      </p>
+                      <p className="text-sm text-slate-600">
+                        {formatCurrency(item.price)} · Qty {item.quantity}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      className="text-rose-600"
                       onClick={() => removeItem(item.productId)}
-                      style={{ background: 'salmon', cursor: 'pointer' }}
                     >
                       Remove
-                    </button>
-                  </td>
-                </tr>
+                    </Button>
+                  </div>
+                  <p className="mt-2 text-sm font-semibold text-slate-900">
+                    Subtotal: {formatCurrency(item.price * item.quantity)}
+                  </p>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </Card>
 
-          <div
-            style={{
-              textAlign: 'right',
-              marginTop: '20px',
-              borderTop: '2px solid #333',
-              paddingTop: '10px',
-            }}
-          >
-            <h2>Order Total: {total.toFixed(2)} EUR</h2>
-            <button
+          <Card className="space-y-4">
+            <h3 className="text-lg font-semibold text-slate-900">
+              Order summary
+            </h3>
+            <div className="flex items-center justify-between text-sm text-slate-600">
+              <span>Items</span>
+              <span>{itemCount}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm text-slate-600">
+              <span>Estimated total</span>
+              <span className="text-base font-semibold text-slate-900">
+                {formatCurrency(total)}
+              </span>
+            </div>
+            <Button
               onClick={handlePlaceOrder}
               disabled={loading || items.length === 0}
-              style={{
-                padding: '15px 30px',
-                fontSize: '1.2em',
-                cursor: 'pointer',
-                background: 'green',
-                color: 'white',
-              }}
-              type="button"
+              className="w-full"
             >
-              {loading ? 'Processing...' : 'Place Order'}
-            </button>
-          </div>
-        </>
+              {loading ? 'Processing...' : 'Place order'}
+            </Button>
+            <Button variant="secondary" className="w-full" onClick={clearCart}>
+              Clear cart
+            </Button>
+          </Card>
+        </div>
       )}
     </div>
   );
