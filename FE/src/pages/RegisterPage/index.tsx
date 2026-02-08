@@ -29,13 +29,13 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto w-full max-w-2xl space-y-8 px-4 sm:px-6">
       <PageHeader
         title="Create your account"
-        description="Join ShopSense and start building your cart."
+        description="Join ShopCart and start building your cart."
       />
 
-      <Card className="max-w-lg">
+      <Card className="mx-auto w-full max-w-lg">
         {error && (
           <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
             {error}

@@ -19,7 +19,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ itemCount }) => {
           className="flex items-center gap-2 text-lg font-semibold text-slate-900"
         >
           <span className="text-2xl">🛍️</span>
-          ShopSense
+          ShopCart
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-semibold text-slate-600 md:flex">
           <NavLink
