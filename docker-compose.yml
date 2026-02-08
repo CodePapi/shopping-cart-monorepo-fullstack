@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
   # 1. PostgreSQL Database Service
-  awr-pg:
+  shop-cart-pg:
     image: postgres:14.17-alpine
-    container_name: awr-be-project-pg
+    container_name: shop-cart-pg
     restart: unless-stopped
     environment:
       POSTGRES_USER: user
@@ -13,7 +13,7 @@ services:
     ports:
       - 5432:5432
     networks:
-      - awr-network
+      - shop-cart-network
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d shop-cart']
       interval: 5s
@@ -22,14 +22,14 @@ services:
       start_period: 10s
 
   # 2. Backend (NestJS) Service
-  awr-be:
+  shop-cart-be:
     build:
       context: . 
       dockerfile: ./BE/Dockerfile 
       target: development 
-    container_name: awr-be
+    container_name: shop-cart-be
     depends_on:
-      awr-pg:
+      shop-cart-pg:
         condition: service_healthy
     ports:
       - 3000:3000
@@ -37,14 +37,14 @@ services:
       - .:/app
       - /app/BE/node_modules
     networks:
-      - awr-network
+      - shop-cart-network
     command: sh -c "npm run build --workspace=shared && cd BE && npx prisma generate && npx prisma migrate deploy && cd .. && npm run start:dev --workspace=BE"  
   # 3. Frontend (Vite/React) Service
-  awr-fe:
+  shop-cart-fe:
     build:
       context: .
       dockerfile: ./FE/Dockerfile 
-    container_name: awr-fe
+    container_name: shop-cart-fe
     ports:
       - 5173:5173
     volumes:
@@ -53,11 +53,11 @@ services:
       - /app/shared/node_modules
     command: sh -c "npm install && npm run dev --workspace=FE"
     depends_on:
-      - awr-be
+      - shop-cart-be
     networks:
-      - awr-network
+      - shop-cart-network
 
 networks:
-  awr-network:
-    name: awr-network
+  shop-cart-network:
+    name: shop-cart-network
     driver: bridge

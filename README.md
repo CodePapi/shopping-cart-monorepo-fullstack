@@ -1,192 +1,90 @@
-# AWR Store – Full-Stack E-Commerce Project
-[Kindly Watch this video before](https://www.loom.com/share/e6824c3ce6c54d828a443f56cce48eee)
+# Shop Cart — Full-Stack E‑Commerce (Pet Project)
 
+Shop Cart is a personal full‑stack e‑commerce project built to showcase end‑to‑end user sign-up, product, cart, and ordering workflows with a modern React frontend and a NestJS + Prisma backend. It is intentionally small, clean, and production‑ready in structure so features can evolve quickly.
 
-A full-stack e-commerce application built as part of a technical take-home challenge.
-I did build the app only to follow instructions but also to demonstrate expertise on solving problems, tooling (trade offs), intuitiveness, engineering best practices and creativity. 
-- I spined up the entire project on Docker to run on a single command. 
-- I added Github actions to run the test cases, lint and format on PR for both ends. 
-- I followed best practices on github by utilizing the PR system, Branching system, pr readable and purposeful naming convention system (Would have included versioning in real life for more robust systems if it was deployed)
-- I also used a Monorepo and introduced a shared directory where BE and FE had something in common that did not need to be repeated by this applied the principle of DRY.
-- I applied engineering principles like YAGNI by removing all files and codes that were not necessary most especially from the vite+react boilerplate.
-- I applied principles like KISS by not over-engineering, for instance, I also used only native react tooling for everything
-    - API Consumption, I used fetch API and not any library
-    - State management, I used useContext API and not libraries like Redux, Mobx, Zustand etc.
-    - I utilized the power of inline css, Not libraries for component frameworks or styled libraries like Tailwindcss, Mui, AndDesign, Bootstrap, Scss etc 
-    - I spined up my monorepo with npm instead of pnpm because in this project scale, it was not needed even though it is the most suitable choice for Monorepos.
-    - I used native javascript (alert) instead of building a component for the purpose or a library.
-- I worked with every preexisting setups and tools on the BE to demonstrate not scared about new techs and the ability to pick and learn tools fast. That also hits on the engineering principle fail fast, learn quick.
-- I did a couple of modularization which rings the bell on the software engineering principle SOC. 
-- I made sure all modules had a Single source of truth for easy readability by mostly adding index.ts files in almost each module. This also helps not just for readability but also makes extensibility easy and encourages the Open/Close Principle to be adhered to.
-- I added some business logic test cases based on the functional requirement of the task to encourage functions integrity.
-- I did not put down so many comments in the code base as I assumed most part of it would be easily readable and understandable.
-- I handled validations, errors, states (loading, error, ) on both ends
+## Highlights
+- Monorepo with shared TypeScript schemas
+- NestJS backend with Prisma + PostgreSQL
+- React + Vite frontend with Tailwind CSS
+- Authentication with JWT and admin‑only product creation
+- Docker Compose for local development
 
+## Architecture
+- FE: React, Vite, Tailwind, Typescript
+- BE: NestJS, Prisma, PostgreSQL, Typescript
+- shared: shared Zod schemas and types
 
-This monorepo contains:
-
-- A **NestJS backend** with PostgreSQL + Prisma  
-- A **React + Vite + Typescript frontend**  
-- A **Shared workspace** for TypeScript interfaces (also with room for future extensions) 
-- A **Docker-based development environment** that runs the entire stack with one command
-
----
-
-## ✨ Features Implemented
-
-### Backend (NestJS + Prisma + PostgreSQL)
-- REST API for:
-  - Products (CRUD)
-  - Orders & Relational Modeling (CRUD)
-- Prisma schema with migrations
-- PostgreSQL container with health checks
-- Shared types imported from `/shared`
-- Input validation, DTOs, modular architecture based on Monorepo
-- Error handling with clean responses returned to FE
-- Test cases for important business logics
-- Clean, modular codes, Robust validation & error handling, Safe transactions (Data integrity) as per instructions
-
-### Frontend (React + Vite)
-- Admin Dashboard Page
-- Product listing page  (Shop page)
-- Create Product form Page
-- Page not found page
-- Order Confirmation page
-- Add-to-cart experience  
-- Cart management  
-- Checkout flow connected to BE  
-- Shared TypeScript types from `/shared`  
-- Simple/clean styling (per instructions)
-
-### Monorepo Structure (npm workspaces)
+## Project Structure
 ```
-awr-store-project/
+shop-cart-project/
 ├── BE/        # Backend (NestJS)
 ├── FE/        # Frontend (Vite + React)
-├── shared/    # Shared types
-├── package.json # Scripts and workspace definitions
+├── shared/    # Shared types/schemas
+├── package.json
 └── docker-compose.yml
-
 ```
 
----
+## Running Locally (Docker)
+### Prerequisites
+- Docker and Docker Compose
 
-## 🐳 Running the Project (Docker)
-
-### Requirements (Make sure already have)
-- Docker
-- Docker Compose
-- .env inside the BE directory (check BE/.env.example for what to provide)
-
-### Start the entire stack (from the root)
-```bash
+### Start the stack
+```
 npm run dev
 ```
 
-This brings up:
+Services:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
+- Postgres: localhost:5432
 
-| Service | URL |
-|--------|-----|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:3000 |
-| PostgreSQL | localhost:5432 |
-
-### Rebuild containers if needed
-```bash
-npm run dev:build
+### Stop containers
 ```
-
-### Stop all containers
-```bash
 npm run dev:down
 ```
 
----
-
-## 🛠 Tech Stack
-
-### Backend
-- NestJS
-- Prisma ORM
-- PostgreSQL
-- TypeScript
-- Docker
-
-### Frontend
-- React
-- Vite
-- TypeScript
-- Docker
-
-### Dev Tools
-- Biome (format + lint)
-- npm workspaces
-- Docker Compose
-- Tests Cases (frontend and backend)
-- CI Pipeline (Github Actions: runs lint, format and tests)
-
----
-
-## 🧱 Development Details
-
-### Backend Startup Flow
-The backend container runs:
-
+## Environment Variables
+Create BE/.env with:
 ```
-npm run build --workspace=shared
-cd BE &&
-npx prisma generate &&
-npx prisma migrate deploy &&
-npm run start:dev --workspace=BE
+DATABASE_URL=postgresql://user:password@shop-cart-pg:5432/shop-cart?schema=public
+JWT_SECRET=your_jwt_secret
+ADMIN_CREATION_SECRET=your_admin_secret
 ```
 
-### Frontend Startup Flow
-```
-npm install
-npm run dev --workspace=FE
-```
+## Auth & Admin Flow
+- Register/login via /auth/register and /auth/login
+- To create an admin account, pass the header x-admin-secret with ADMIN_CREATION_SECRET when registering
+- Only admins can create products
 
----
+## Scripts
+- npm run dev — start full stack with Docker
+- npm run dev:build — rebuild and start
+- npm run dev:down — stop containers
+- npm run test:be — backend tests
+- npm run test:fe — frontend tests
 
-## 🧪 Tests
+## CI Pipeline (GitHub Actions)
+On pull requests, the CI workflow runs:
+- Lint and format checks (Biome)
+- Backend tests
+- Frontend tests
 
-```
-npm run test:be
-npm run test:fe
-```
 
----
+## API Documentation
+Swagger UI is available when the backend is running:
+- http://localhost:3000/api
 
-## 📦 Scripts
+### Auth
+- POST /auth/register
+- POST /auth/login
 
-| Script | Description |
-|--------|-------------|
-| npm run dev | Start full stack with Docker |
-| npm run dev:build | Rebuild & restart everything |
-| npm run dev:down | Stop all containers |
-| npm run test:be | Backend tests |
-| npm run test:fe | Frontend tests |
-| npm run biome:format | Auto-format codebase |
-| npm run biome:lint | Lint entire monorepo |
-| npm run biome:fix | Auto-fix lint issues |
+### Products
+- GET /products
+- POST /products (admin only)
 
----
+### Orders
+- POST /orders
+- GET /orders/:id
 
-## 📝 Environment Variables
-
-```
-DATABASE_URL="postgresql://user:password@awr-pg:5432/awr?schema=public" //SN: Of course, in reality I will not expose
-
-```
-
----
-##  Constraints - What I did not do
-- Like stated initially, I did not really use libraries on my FE except for routing
-- I did not deploy my codes as it was not really necessary for the task, I should have been able to do something on Netlify, Vercel or AWS amplify for the FE and AWS, Heroku or Hetzner for the BE
-- I did not consider Observability and monitoring on any end as it was not necessary although health was set on Docker.
-- I did not consider SEO Optimization Accessibility, Localization on the FE although I considered responsiveness.
-- I did not consider adding query and params to my backend for filtration and sorting, but on course for a system that is meant to grow in real life, it would be important to add that
-
-## 🤝 Submission
-
-This repository contains my complete submission for the Full-Stack E-Commerce Take-Home Challenge.
+## Notes
+This is a pet project intended for learning and showcasing best‑practice structure. It is not production‑deployed and favors clarity over scale.
