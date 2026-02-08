@@ -10,8 +10,8 @@ Shop Cart is a personal full‑stack e‑commerce project built to showcase end�
 - Docker Compose for local development
 
 ## Architecture
-- FE: React, Vite, Tailwind
-- BE: NestJS, Prisma, PostgreSQL
+- FE: React, Vite, Tailwind, Typescript
+- BE: NestJS, Prisma, PostgreSQL, Typescript
 - shared: shared Zod schemas and types
 
 ## Project Structure
