@@ -1,6 +1,5 @@
 # Shop Cart — Full-Stack E‑Commerce (Pet Project)
 
-<img width="2936" height="1568" alt="image" src="https://github.com/user-attachments/assets/ee842a4d-8a0f-4ba9-aa2f-99125cbbc584" />
 
 
 Shop Cart is a personal full‑stack e‑commerce project built to showcase end‑to‑end user sign-up, product, cart, and ordering workflows with a modern React frontend and a NestJS + Prisma backend. It is intentionally small, clean, and production‑ready in structure so features can evolve quickly.
